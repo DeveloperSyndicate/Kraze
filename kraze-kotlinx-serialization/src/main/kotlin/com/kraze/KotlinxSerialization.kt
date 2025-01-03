@@ -3,6 +3,7 @@ package com.kraze
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
+import com.kraze.Serialization
 import kotlin.reflect.KClass
 
 class KotlinxSerialization : Serialization {

@@ -1,6 +1,7 @@
 package com.kraze
 
 import com.google.gson.Gson
+import com.kraze.Serialization
 import kotlin.reflect.KClass
 
 class GsonSerialization: Serialization {

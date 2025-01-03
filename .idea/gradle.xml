@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="GradleMigrationSettings" migrationVersion="1" />
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleJvm" value="#JAVA_HOME" />
+        <option name="gradleHome" value="C:/Program Files/Gradle/gradle-8.11.1" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/kraze" />
+            <option value="$PROJECT_DIR$/kraze-gson" />
+            <option value="$PROJECT_DIR$/kraze-kotlinx-serialization" />
+            <option value="$PROJECT_DIR$/kraze-moshi" />
           </set>
         </option>
       </GradleProjectSettings>

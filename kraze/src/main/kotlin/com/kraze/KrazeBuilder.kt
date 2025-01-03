@@ -1,6 +1,6 @@
 package com.kraze
 
-import kotlinx.serialization.json.Json
+import com.kraze.Serialization
 import okhttp3.Authenticator
 import okhttp3.ConnectionPool
 import okhttp3.Interceptor

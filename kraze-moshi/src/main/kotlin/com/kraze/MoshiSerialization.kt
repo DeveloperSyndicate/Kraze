@@ -3,6 +3,7 @@ package com.kraze
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.squareup.moshi.JsonAdapter
+import com.kraze.Serialization
 import kotlin.reflect.KClass
 
 class MoshiSerialization : Serialization {
