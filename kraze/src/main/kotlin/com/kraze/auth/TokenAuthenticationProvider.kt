@@ -1,9 +1,6 @@
-package com.kraze
+package com.kraze.auth
 
-import kotlinx.serialization.InternalSerializationApi
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.serializer
-import kotlin.reflect.KClass
+import okhttp3.Request
 
 /*
  * Copyright 2024 Developer Syndicate
@@ -25,16 +22,12 @@ import kotlin.reflect.KClass
  * Created: 04-01-2025
  */
 
-class KotlinxSerialization : Serialization {
-    private val json = Json
 
-    @OptIn(InternalSerializationApi::class)
-    override fun <T : Any> decodeFromString(type: KClass<T>, string: String): T {
-        return json.decodeFromString(type.serializer(), string)
-    }
-
-    @OptIn(InternalSerializationApi::class)
-    override fun <T : Any> encodeToString(type: KClass<T>, value: T): String {
-        return json.encodeToString(type.serializer(), value)
+class TokenAuthenticationProvider(private val bearer: String) : AuthenticationProvider {
+    override fun addAuthenticationHeaders(builder: Request.Builder) {
+        if (bearer.lowercase().contains("bearer")) {
+            throw IllegalArgumentException("Don't include Bearer keyword")
+        }
+        builder.addHeader("Authorization", "Bearer $bearer")
     }
 }

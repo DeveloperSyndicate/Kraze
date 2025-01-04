@@ -1,9 +1,7 @@
-package com.kraze
+package com.kraze.utils
 
-import kotlinx.serialization.InternalSerializationApi
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.serializer
-import kotlin.reflect.KClass
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 /*
  * Copyright 2024 Developer Syndicate
@@ -25,16 +23,7 @@ import kotlin.reflect.KClass
  * Created: 04-01-2025
  */
 
-class KotlinxSerialization : Serialization {
-    private val json = Json
-
-    @OptIn(InternalSerializationApi::class)
-    override fun <T : Any> decodeFromString(type: KClass<T>, string: String): T {
-        return json.decodeFromString(type.serializer(), string)
-    }
-
-    @OptIn(InternalSerializationApi::class)
-    override fun <T : Any> encodeToString(type: KClass<T>, value: T): String {
-        return json.encodeToString(type.serializer(), value)
-    }
+@OptIn(ExperimentalEncodingApi::class)
+internal fun String.toBase64(): String {
+     return Base64.encode(this.toByteArray())
 }

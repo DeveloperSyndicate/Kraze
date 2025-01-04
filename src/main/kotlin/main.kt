@@ -1,18 +1,58 @@
-import com.kraze.*
-import kotlinx.serialization.Serializable
+import com.kraze.GsonSerialization
+import com.kraze.krazeClient
+import com.kraze.logging.KrazeLoggingInterceptor
+import com.kraze.websocket.krazeWebSocket
 
 fun main() {
+
+
     val client = krazeClient {
         baseUrl("https://catfact.ninja/")
-        serializer(KotlinxSerialization())
+        logLevel(KrazeLoggingInterceptor.Level.BODY)
+        serializer(GsonSerialization())
     }
 
-    client.get<Model>("fact") {
+    val webSocket = krazeWebSocket("/chat", client) {
+        headers {
+            "Authorization" to "Bearer my-token"
+        }
 
-    }.onSuccess {
-        println(it)
+        onOpen { webSocket, response ->
+            println("WebSocket connection opened: $response")
+        }
+
+        onMessage { webSocket, text ->
+            println("Message received: $text")
+        }
+
+        onClosing { webSocket, code, reason ->
+            println("WebSocket is closing: $code / $reason")
+        }
+
+        onFailure { webSocket, throwable, response ->
+            println("WebSocket error: ${throwable.message}")
+        }
     }
+
+    webSocket.send("")
+
+//    client.get<Model>(""){
+//        queryParam("name", "saba")
+//    }.onSuccess {
+//        println(it)
+//    }.onFailure {
+//        println(it)
+//    }
+//
+//    println("hello")
+
+    val request = client.getWithResult("fact").onSuccess {
+//        println(it.body?.string())
+    }
+//
+//    val request2 = client.get("fact")
+//    request2.body?.string()
+
 }
 
-@Serializable
 data class Model(val fact: String, val length: Int)
