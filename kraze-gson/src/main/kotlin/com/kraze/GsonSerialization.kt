@@ -24,7 +24,13 @@ import kotlin.reflect.KClass
  */
 
 class GsonSerialization: Serialization {
-    private val gson = Gson()
+    private val gson: Gson
+    constructor() : super() {
+        this.gson = Gson()
+    }
+    constructor(gson: Gson) : super() {
+        this.gson = gson
+    }
     override fun <T : Any> decodeFromString(type: KClass<T>, string: String): T {
         return gson.fromJson(string, type.java)
     }

@@ -26,7 +26,13 @@ import kotlin.reflect.KClass
  */
 
 class KotlinxSerialization : Serialization {
-    private val json = Json
+    private val json: Json
+    constructor(json: Json) : super() {
+        this.json = json
+    }
+    constructor(): super() {
+        this.json = Json.Default
+    }
 
     @OptIn(InternalSerializationApi::class)
     override fun <T : Any> decodeFromString(type: KClass<T>, string: String): T {

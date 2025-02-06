@@ -26,9 +26,16 @@ import kotlin.reflect.KClass
  */
 
 class MoshiSerialization : Serialization {
-    private val moshi: Moshi = Moshi.Builder()
-        .add(KotlinJsonAdapterFactory())
-        .build()
+    private val moshi: Moshi
+    constructor(moshi: Moshi) : super() {
+        this.moshi = moshi
+    }
+
+    constructor() : super() {
+        this.moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
+    }
 
     override fun <T : Any> decodeFromString(type: KClass<T>, string: String): T {
         val jsonAdapter: JsonAdapter<T> = moshi.adapter(type.java)

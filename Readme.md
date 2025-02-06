@@ -27,7 +27,15 @@
 Add the following dependency to your `build.gradle.kts`:
 
 ```kotlin
-implementation("com.example:kraze-network:1.0.0")
+implementation("com.developersyndicate.kraze:kraze:latest-version")
+```
+To Enable Serialization:
+```kotlin
+//You can use anyone of this serialization library
+implementation("com.developersyndicate.kraze:kraze-gson:latest-version")
+implementation("com.developersyndicate.kraze:kraze-jackson:latest-version")
+implementation("com.developersyndicate.kraze:kraze-kotlinx-serialization:latest-version")
+implementation("com.developersyndicate.kraze:kraze-moshi:latest-version")
 ```
 
 ## Features
@@ -137,8 +145,8 @@ client.get("/users") {
 ## Error Handling
 Handle errors using Kotlin's Result API:
 ```kotlin
-val result: Result<Response> = client.getWithResult("/users")
-result.onSuccess { response ->
+client.getWithResult("/users")
+    .onSuccess { response ->
     println("Success: ${response.body()?.string()}")
 }.onFailure { error ->
     println("Error: ${error.message}")

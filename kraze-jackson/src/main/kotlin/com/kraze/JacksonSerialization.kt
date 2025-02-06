@@ -25,7 +25,13 @@ import kotlin.reflect.KClass
  */
 
 class JacksonSerialization : Serialization {
-    private val objectMapper = ObjectMapper().registerModule(KotlinModule.Builder().build())
+    private val objectMapper: ObjectMapper
+    constructor() : super() {
+        this.objectMapper = ObjectMapper().registerModule(KotlinModule.Builder().build())
+    }
+    constructor(objectMapper: ObjectMapper) : super() {
+        this.objectMapper = objectMapper
+    }
 
     override fun <T : Any> decodeFromString(type: KClass<T>, string: String): T {
         return objectMapper.readValue(string, type.java)
