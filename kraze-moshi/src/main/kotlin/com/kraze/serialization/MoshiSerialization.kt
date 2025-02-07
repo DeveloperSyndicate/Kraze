@@ -1,9 +1,4 @@
-package com.kraze
-
-import kotlinx.serialization.InternalSerializationApi
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.serializer
-import kotlin.reflect.KClass
+package com.kraze.serialization
 
 /*
  * Copyright 2024 Developer Syndicate
@@ -25,22 +20,32 @@ import kotlin.reflect.KClass
  * Created: 04-01-2025
  */
 
-class KotlinxSerialization : Serialization {
-    private val json: Json
-    constructor(json: Json) : super() {
-        this.json = json
-    }
-    constructor(): super() {
-        this.json = Json.Default
+
+import com.kraze.Serialization
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlin.reflect.KClass
+
+class MoshiSerialization : Serialization {
+    private val moshi: Moshi
+    constructor(moshi: Moshi) : super() {
+        this.moshi = moshi
     }
 
-    @OptIn(InternalSerializationApi::class)
+    constructor() : super() {
+        this.moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
+    }
+
     override fun <T : Any> decodeFromString(type: KClass<T>, string: String): T {
-        return json.decodeFromString(type.serializer(), string)
+        val jsonAdapter: JsonAdapter<T> = moshi.adapter(type.java)
+        return jsonAdapter.fromJson(string) ?: throw IllegalStateException("Error deserializing")
     }
 
-    @OptIn(InternalSerializationApi::class)
     override fun <T : Any> encodeToString(type: KClass<T>, value: T): String {
-        return json.encodeToString(type.serializer(), value)
+        val jsonAdapter: JsonAdapter<T> = moshi.adapter(type.java)
+        return jsonAdapter.toJson(value)
     }
 }

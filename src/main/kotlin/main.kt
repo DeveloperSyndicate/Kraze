@@ -1,11 +1,9 @@
-import com.kraze.GsonSerialization
-import com.kraze.JacksonSerialization
-import com.kraze.KotlinxSerialization
-import com.kraze.MoshiSerialization
 import com.kraze.krazeClient
 import com.kraze.logging.KrazeLoggingInterceptor
-import com.kraze.websocket.krazeWebSocket
-import jdk.javadoc.internal.doclets.formats.html.markup.HtmlStyle.header
+import com.kraze.serialization.GsonSerialization
+import com.kraze.serialization.JacksonSerialization
+import com.kraze.serialization.KotlinxSerialization
+import com.kraze.serialization.MoshiSerialization
 import kotlinx.serialization.Serializable
 
 fun main() {
@@ -48,16 +46,6 @@ fun main() {
 //    }
 //
 //    println("hello")
-
-    client.getAsync("fact",{}, { call, t ->
-        t.printStackTrace()
-    }) { call, response ->
-        if (response.isSuccessful) {
-            response.body?.string()?.let {
-                print(it)
-            }
-        }
-    }
 
 
 //

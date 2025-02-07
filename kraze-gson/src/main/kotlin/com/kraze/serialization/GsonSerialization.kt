@@ -1,9 +1,4 @@
-package com.kraze
-
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import kotlin.reflect.KClass
+package com.kraze.serialization
 
 /*
  * Copyright 2024 Developer Syndicate
@@ -25,25 +20,26 @@ import kotlin.reflect.KClass
  * Created: 04-01-2025
  */
 
-class MoshiSerialization : Serialization {
-    private val moshi: Moshi
-    constructor(moshi: Moshi) : super() {
-        this.moshi = moshi
-    }
+import com.google.gson.Gson
+import com.kraze.Serialization
+import kotlin.reflect.KClass
+
+class GsonSerialization : Serialization {
+    private val gson: Gson
 
     constructor() : super() {
-        this.moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
+        this.gson = Gson()
+    }
+
+    constructor(gson: Gson) : super() {
+        this.gson = gson
     }
 
     override fun <T : Any> decodeFromString(type: KClass<T>, string: String): T {
-        val jsonAdapter: JsonAdapter<T> = moshi.adapter(type.java)
-        return jsonAdapter.fromJson(string) ?: throw IllegalStateException("Error deserializing")
+        return gson.fromJson(string, type.java)
     }
 
     override fun <T : Any> encodeToString(type: KClass<T>, value: T): String {
-        val jsonAdapter: JsonAdapter<T> = moshi.adapter(type.java)
-        return jsonAdapter.toJson(value)
+        return gson.toJson(value)
     }
 }

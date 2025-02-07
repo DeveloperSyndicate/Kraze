@@ -1,8 +1,4 @@
-package com.kraze
-
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import kotlin.reflect.KClass
+package com.kraze.serialization
 
 /*
  * Copyright 2024 Developer Syndicate
@@ -23,6 +19,12 @@ import kotlin.reflect.KClass
  * Organization: Developer Syndicate
  * Created: 04-01-2025
  */
+
+
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.kraze.Serialization
+import kotlin.reflect.KClass
 
 class JacksonSerialization : Serialization {
     private val objectMapper: ObjectMapper

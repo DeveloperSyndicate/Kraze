@@ -1,7 +1,4 @@
-package com.kraze
-
-import com.google.gson.Gson
-import kotlin.reflect.KClass
+package com.kraze.serialization
 
 /*
  * Copyright 2024 Developer Syndicate
@@ -23,19 +20,29 @@ import kotlin.reflect.KClass
  * Created: 04-01-2025
  */
 
-class GsonSerialization: Serialization {
-    private val gson: Gson
-    constructor() : super() {
-        this.gson = Gson()
+
+import com.kraze.Serialization
+import kotlinx.serialization.InternalSerializationApi
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
+import kotlin.reflect.KClass
+
+class KotlinxSerialization : Serialization {
+    private val json: Json
+    constructor(json: Json) : super() {
+        this.json = json
     }
-    constructor(gson: Gson) : super() {
-        this.gson = gson
-    }
-    override fun <T : Any> decodeFromString(type: KClass<T>, string: String): T {
-        return gson.fromJson(string, type.java)
+    constructor(): super() {
+        this.json = Json.Default
     }
 
+    @OptIn(InternalSerializationApi::class)
+    override fun <T : Any> decodeFromString(type: KClass<T>, string: String): T {
+        return json.decodeFromString(type.serializer(), string)
+    }
+
+    @OptIn(InternalSerializationApi::class)
     override fun <T : Any> encodeToString(type: KClass<T>, value: T): String {
-        return gson.toJson(value)
+        return json.encodeToString(type.serializer(), value)
     }
 }

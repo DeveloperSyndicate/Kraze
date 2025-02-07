@@ -3,7 +3,7 @@ plugins {
     kotlin("plugin.serialization") version "2.1.0"
 }
 
-group = "io.developersyndicate.kraze"
+group = "com.developersyndicate.kraze"
 version = "1.0-SNAPSHOT"
 
 repositories {
