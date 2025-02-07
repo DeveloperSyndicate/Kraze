@@ -5,6 +5,7 @@ import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
+import java.io.IOException
 
 /*
  * Copyright 2024 Developer Syndicate
@@ -62,6 +63,31 @@ class NetworkClient(
         authProvider?.addAuthenticationHeaders(requestBuilder)
         val request = requestBuilder.build()
         return client.newCall(request = request).execute()
+    }
+
+    fun makeRequestAsync(
+        method: String,
+        path: String,
+        block: RequestBuilder.() -> Unit,
+        onSuccess: (Call, Response) -> Unit,
+        onFailure: (Call, Throwable) -> Unit
+    ) {
+        val builder = RequestBuilder(url)
+        builder.url(path)
+        builder.method(method)
+        builder.block()
+        val requestBuilder = builder.build()
+        authProvider?.addAuthenticationHeaders(requestBuilder)
+        val request = requestBuilder.build()
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                onFailure(call, e)
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                onSuccess(call, response)
+            }
+        })
     }
 
     // HTTP method-specific methods
@@ -168,6 +194,88 @@ class NetworkClient(
         }
     }
 
+    // Async Operations
+    fun getAsync(
+        path: String,
+        block: RequestBuilder.() -> Unit = {},
+        onFailure: (Call, Throwable) -> Unit = { _, _ -> },
+        onSuccess: (Call, Response) -> Unit = { _, _ -> },
+    ) {
+        makeRequestAsync(Methods.GET.name, path, block, onSuccess, onFailure)
+    }
+
+    fun postAsync(
+        path: String,
+        block: RequestBuilder.() -> Unit,
+        onFailure: (Call, Throwable) -> Unit = { _, _ -> },
+        onSuccess: (Call, Response) -> Unit = { _, _ -> },
+    ) {
+        makeRequestAsync(Methods.POST.name, path, block, onSuccess, onFailure)
+    }
+
+    fun putAsync(
+        path: String,
+        block: RequestBuilder.() -> Unit,
+        onFailure: (Call, Throwable) -> Unit = { _, _ -> },
+        onSuccess: (Call, Response) -> Unit = { _, _ -> },
+    ) {
+        makeRequestAsync(Methods.PUT.name, path, block, onSuccess, onFailure)
+    }
+
+    fun deleteAsync(
+        path: String,
+        block: RequestBuilder.() -> Unit,
+        onFailure: (Call, Throwable) -> Unit = { _, _ -> },
+        onSuccess: (Call, Response) -> Unit = { _, _ -> },
+    ) {
+        makeRequestAsync(Methods.DELETE.name, path, block, onSuccess, onFailure)
+    }
+
+    fun headAsync(
+        path: String,
+        block: RequestBuilder.() -> Unit = {},
+        onFailure: (Call, Throwable) -> Unit = { _, _ -> },
+        onSuccess: (Call, Response) -> Unit = { _, _ -> },
+    ) {
+        makeRequestAsync(Methods.HEAD.name, path, block, onSuccess, onFailure)
+    }
+
+    fun optionsAsync(
+        path: String,
+        block: RequestBuilder.() -> Unit = {},
+        onFailure: (Call, Throwable) -> Unit = { _, _ -> },
+        onSuccess: (Call, Response) -> Unit = { _, _ -> },
+    ) {
+        makeRequestAsync(Methods.OPTIONS.name, path, block, onSuccess, onFailure)
+    }
+
+    fun patchAsync(
+        path: String,
+        block: RequestBuilder.() -> Unit,
+        onFailure: (Call, Throwable) -> Unit = { _, _ -> },
+        onSuccess: (Call, Response) -> Unit = { _, _ -> },
+    ) {
+        makeRequestAsync(Methods.PATCH.name, path, block, onSuccess, onFailure)
+    }
+
+    fun traceAsync(
+        path: String,
+        block: RequestBuilder.() -> Unit = {},
+        onFailure: (Call, Throwable) -> Unit = { _, _ -> },
+        onSuccess: (Call, Response) -> Unit = { _, _ -> },
+    ) {
+        makeRequestAsync(Methods.TRACE.name, path, block, onSuccess, onFailure)
+    }
+
+    fun connectAsync(
+        path: String,
+        block: RequestBuilder.() -> Unit = {},
+        onFailure: (Call, Throwable) -> Unit = { _, _ -> },
+        onSuccess: (Call, Response) -> Unit = { _, _ -> },
+    ) {
+        makeRequestAsync(Methods.CONNECT.name, path, block, onSuccess, onFailure)
+    }
+
     internal fun newWebSocket(
         path: String,
         block: RequestBuilder.() -> Unit,
@@ -180,8 +288,6 @@ class NetworkClient(
 
         return client.newWebSocket(request, listener)
     }
-
-
 
     // DSL for HTTP Requests
     class RequestBuilder(private val baseUrl: String?) {
@@ -199,7 +305,9 @@ class NetworkClient(
             this.url = baseUrl?.let { "$it$path" } ?: path
         }
 
-        fun auth(provider: AuthenticationProvider) { this.authProvider = provider }
+        fun auth(provider: AuthenticationProvider) {
+            this.authProvider = provider
+        }
 
         fun queryParam(name: String, value: String) {
             queryParams[name] = value

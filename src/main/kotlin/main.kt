@@ -5,6 +5,7 @@ import com.kraze.MoshiSerialization
 import com.kraze.krazeClient
 import com.kraze.logging.KrazeLoggingInterceptor
 import com.kraze.websocket.krazeWebSocket
+import jdk.javadoc.internal.doclets.formats.html.markup.HtmlStyle.header
 import kotlinx.serialization.Serializable
 
 fun main() {
@@ -40,17 +41,25 @@ fun main() {
 //
 //    webSocket.send("")
 
-    client.get<Model>("fact").onSuccess {
-        println(it)
-    }.onFailure {
-        println(it)
-    }
+//    client.get<Model>("fact").onSuccess {
+//        println(it)
+//    }.onFailure {
+//        println(it)
+//    }
 //
 //    println("hello")
 
-//    val request = client.getWithResult("fact").onSuccess {
-//        println(it.body?.string())
-//    }
+    client.getAsync("fact",{}, { call, t ->
+        t.printStackTrace()
+    }) { call, response ->
+        if (response.isSuccessful) {
+            response.body?.string()?.let {
+                print(it)
+            }
+        }
+    }
+
+
 //
 //    val request2 = client.get("fact")
 //    request2.body?.string()
