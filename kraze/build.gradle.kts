@@ -19,7 +19,7 @@ dependencies {
 }
 
 mavenPublishing {
-    coordinates("com.github.developersyndicate", "kraze", "1.0.0-alpha")
+    coordinates("com.developersyndicate.kraze", "kraze", "1.0.0-alpha")
 
     pom {
         name.set("Kraze")

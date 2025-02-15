@@ -1,197 +1,228 @@
-# Kraze Network Library
+# Kraze Documentation
 
-`Kraze` is a Kotlin-based, lightweight, and extensible HTTP networking library built on top of OkHttp. It provides a fluent API for making HTTP requests with support for serialization, authentication, and custom configuration.
+## Overview
+Kraze is a modern, Kotlin-first HTTP networking library built on top of OkHttp. It provides a flexible, type-safe API for making HTTP requests with built-in support for multiple serialization libraries and WebSocket connections.
 
-## Table of Contents
+## Core Components
 
-- [Installation](#installation)
-- [Features](#features)
-- [Quick Start](#quick-start)
-- [Usage](#usage)
-    - [Creating a Network Client](#creating-a-network-client)
-    - [Making HTTP Requests](#making-http-requests)
-    - [Serialization](#serialization)
-    - [Authentication](#authentication)
-    - [Custom Configuration](#custom-configuration)
-- [RequestBuilder DSL](#requestbuilder-dsl)
-- [Error Handling](#error-handling)
-- [Full Example](#full-example)
-- [Contribution](#contribution)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
+### 1. Main Library (kraze)
+The core library providing the base networking functionality.
 
----
+### 2. Serialization Modules
+- **kraze-gson**: Integration with Google's Gson
+- **kraze-jackson**: Integration with Jackson
+- **kraze-kotlinx-serialization**: Integration with Kotlin's official serialization library
+- **kraze-moshi**: Integration with Square's Moshi
 
 ## Installation
 
-Add the following dependency to your `build.gradle.kts`:
+Add the following to your `build.gradle.kts`:
 
 ```kotlin
-implementation("com.developersyndicate.kraze:kraze:latest-version")
-```
-To Enable Serialization:
-```kotlin
-//You can use anyone of this serialization library
-implementation("com.developersyndicate.kraze:kraze-gson:latest-version")
-implementation("com.developersyndicate.kraze:kraze-jackson:latest-version")
-implementation("com.developersyndicate.kraze:kraze-kotlinx-serialization:latest-version")
-implementation("com.developersyndicate.kraze:kraze-moshi:latest-version")
+// Core library
+implementation("com.developersyndicate.kraze:kraze:1.0.0-alpha")
+
+// Choose one or more serialization modules
+implementation("com.developersyndicate.kraze:kraze-gson:1.0.0-alpha")
+implementation("com.developersyndicate.kraze:kraze-jackson:1.0.0-alpha")
+implementation("com.developersyndicate.kraze:kraze-kotlinx-serialization:1.0.0-alpha")
+implementation("com.developersyndicate.kraze:kraze-moshi:1.0.0-alpha")
 ```
 
-## Features
-- **HTTP Methods:** Supports all common HTTP methods like GET, POST, PUT, DELETE, etc.
-- **Serialization Support:** Seamlessly decode responses into Kotlin objects.
-- **Authentication:** Built-in support for adding authentication headers.
-- **RequestBuilder DSL:** A flexible DSL for configuring requests.
-- **Timeouts and Connection Pooling:** Customize timeouts and connection pooling for optimized performance.
-- **Logging:** Configurable logging for debugging HTTP requests and responses.
+## Basic Usage
 
-## Quick Start
-Here's a quick example of how to use Kraze:
+### Creating a Client
+
 ```kotlin
 val client = krazeClient {
     baseUrl("https://api.example.com")
-    logLevel(KrazeLoggingInterceptor.Level.BODY)
-    connectTimeout(15)
-}
-val response = client.get("/endpoint") {
-  queryParam("key", "value")
-  header("Authorization", "Bearer token")
-}
-
-println(response.body?.string())
-
-// Get with Result method
-val response2 = client.getWithResult("/endpoint") {
-    queryParam("key", "value")
-    header("Authorization", "Bearer token")
-}
-response2.onSuccess {
-    println("Success: $it")
-}.onFailure {
-    println("Error: ${it.message}")
+    logLevel(KrazeLoggingInterceptor.Level.BASIC)
+    serializer(MoshiSerialization()) // Choose your preferred serializer
 }
 ```
 
-## Usage
-### Creating a Network Client
-Create a NetworkClient using the krazeClient function:
-```kotlin
-val client = krazeClient {
-    baseUrl("https://api.example.com")
-    connectTimeout(30) // Timeout in seconds
-    readTimeout(30)
-    writeTimeout(30)
-    logLevel(KrazeLoggingInterceptor.Level.BODY)
-    serializer(GsonSerialization()) // Optional: for JSON parsing
-}
-```
-## Making HTTP Requests
-You can use methods like get, post, put, delete, etc., for making requests.
-### GET Request
-```kotlin
-val response: Response = client.get("/users") {
-    queryParam("id", "123")
-}
-```
-### POST Request
-```kotlin
-val response: Response = client.post("/users") {
-    body(RequestBody.create(MediaType.get("application/json"), "{ \"name\": \"John\" }"))
-}
-```
-### Serialization
-You can parse HTTP responses into Kotlin objects if a serialization adapter is configured:
-```kotlin
-val user: Result<User> = client.get("/users/123")
-user.onSuccess {
-    println("User name: ${it.name}")
-}
-```
-### Authentication
-Add an AuthenticationProvider to include authentication headers:
-```kotlin
-val client = krazeClient {
-    baseUrl("https://api.example.com")
-    authenticator(TokenAuthenticationProvider("bearer-token-here"))
-}
-```
-### Custom Configuration
-You can customize logging, timeouts, connection pooling, and caching:
-```kotlin
-val client = krazeClient {
-    baseUrl("https://api.example.com")
-    logLevel(KrazeLoggingInterceptor.Level.HEADERS)
-    connectTimeout(10)
-    readTimeout(10)
-    writeTimeout(10)
-    connectionPool(ConnectionPool(5, 5, TimeUnit.MINUTES))
-    cache(File("cache_dir"), 10L * 1024 * 1024) // 10 MB cache
-}
-```
+### Making Requests
 
-## RequestBuilder DSL
-The RequestBuilder DSL allows you to configure requests flexibly:
+#### GET Request
 ```kotlin
-client.get("/users") {
-    queryParam("id", "123")
-    header("Accept", "application/json")
-    timeout(60) // Override default timeout
-    multipartField("field_name", "value")
-    multipartFile("file", "filename.txt", file, MediaType.parse("text/plain")!!)
-}
-```
-
-## Error Handling
-Handle errors using Kotlin's Result API:
-```kotlin
-client.getWithResult("/users")
-    .onSuccess { response ->
-    println("Success: ${response.body()?.string()}")
+// Simple GET request
+client.get<ResponseType>("endpoint").onSuccess { response ->
+    println(response)
 }.onFailure { error ->
-    println("Error: ${error.message}")
-}
-```
-
-## Full Example
-```kotlin
-val client = krazeClient {
-    baseUrl("https://api.example.com")
-    logLevel(KrazeLoggingInterceptor.Level.BODY)
-    serializer(JacksonSerialization()) // Gson/Kotlinx serialization/Moshi/Jackson
-    connectTimeout(30)
-    readTimeout(30)
-    writeTimeout(30)
+    println(error)
 }
 
-val response: Result<MyResponse> = client.get("/endpoint") {
+// GET with query parameters
+client.get<ResponseType>("endpoint") {
     queryParam("key", "value")
     header("Authorization", "Bearer token")
 }
+```
 
-response.onSuccess {
-    println("Success: $it")
-}.onFailure {
-    println("Error: ${it.message}")
+#### POST Request
+```kotlin
+client.post<ResponseType>("endpoint") {
+    body(requestBody)
+    header("Content-Type", "application/json")
 }
 ```
-## Contribution
-We welcome contributions! To contribute:
 
-1. Fork the repository.
-2. Create a new branch for your feature or bugfix: git checkout -b feature-name.
-3. Make your changes and test them.
-4. Commit your changes: git commit-m "Add feature-name".
-5. Push to your branch: git push origin feature-name.
-6. Open a pull request on GitHub.
+## Serialization
 
-Please ensure all contributions adhere to the following:
-- Write clear and concise commit messages.
-- Include appropriate unit tests.
-- Follow the existing coding style.
+### 1. Using Gson
+```kotlin
+val client = krazeClient {
+    serializer(GsonSerialization())
+}
+```
+
+### 2. Using Jackson
+```kotlin
+val client = krazeClient {
+    serializer(JacksonSerialization())
+}
+```
+
+### 3. Using Kotlinx Serialization
+```kotlin
+// Add @Serializable annotation to your data classes
+@Serializable
+data class User(val name: String, val age: Int)
+
+val client = krazeClient {
+    serializer(KotlinxSerialization())
+}
+```
+
+### 4. Using Moshi
+```kotlin
+val client = krazeClient {
+    serializer(MoshiSerialization())
+}
+```
+
+## WebSocket Support
+
+```kotlin
+val webSocket = krazeWebSocket("/chat", client) {
+    headers {
+        "Authorization" to "Bearer token"
+    }
+
+    onOpen { webSocket, response ->
+        println("Connection opened")
+    }
+
+    onMessage { webSocket, text ->
+        println("Message received: $text")
+    }
+
+    onClosing { webSocket, code, reason ->
+        println("Connection closing")
+    }
+
+    onFailure { webSocket, throwable, response ->
+        println("Error: ${throwable.message}")
+    }
+}
+
+// Send message
+webSocket.send("Hello!")
+```
+
+## Advanced Configuration
+
+### Logging Levels
+```kotlin
+krazeClient {
+    logLevel(KrazeLoggingInterceptor.Level.NONE)    // No logging
+    logLevel(KrazeLoggingInterceptor.Level.BASIC)   // Basic request/response info
+    logLevel(KrazeLoggingInterceptor.Level.HEADERS) // Include headers
+    logLevel(KrazeLoggingInterceptor.Level.BODY)    // Include request/response bodies
+}
+```
+
+### Timeouts
+```kotlin
+krazeClient {
+    connectTimeout(30) // seconds
+    readTimeout(30)    // seconds
+    writeTimeout(30)   // seconds
+}
+```
+
+### Error Handling
+```kotlin
+client.get<ResponseType>("endpoint")
+    .onSuccess { response ->
+        // Handle success
+    }
+    .onFailure { error ->
+        when (error) {
+            is NetworkError -> // Handle network error
+            is SerializationError -> // Handle serialization error
+            else -> // Handle other errors
+        }
+    }
+```
+
+## Best Practices
+
+1. **Serialization**: Choose a serialization library based on your needs:
+  - Kotlinx Serialization: Best for Kotlin-first projects
+  - Moshi: Good balance of features and performance
+  - Gson: Widely used, good for Java interop
+  - Jackson: Feature-rich, good for complex JSON handling
+
+2. **Error Handling**: Always handle both success and failure cases using the Result API.
+
+3. **Resource Management**: Close WebSocket connections when no longer needed.
+
+4. **Logging**: Use appropriate log levels for different environments:
+  - BODY for development
+  - BASIC for staging
+  - NONE for production
+
+## Common Patterns
+
+### Repository Pattern
+```kotlin
+class UserRepository(private val client: KrazeClient) {
+    suspend fun getUser(id: String): Result<User> {
+        return client.get("users/$id")
+    }
+
+    suspend fun createUser(user: User): Result<User> {
+        return client.post("users") {
+            body(user)
+        }
+    }
+}
+```
+
+### Service Pattern
+```kotlin
+class AuthService(private val client: KrazeClient) {
+    suspend fun login(credentials: Credentials): Result<Token> {
+        return client.post("auth/login") {
+            body(credentials)
+        }
+    }
+}
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
 ## License
-This library is licensed under the Apache 2.0 License. See the LICENSE file for more details.
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE file](LICENSE) for details.
+
 
 ## Acknowledgments
 This library is built on top of OkHttp by Square, and we extend our gratitude to their amazing work. We also thank the community for tools like Kotlinx Serialization, Gson, Jackson and Moshi that enable efficient data handling.

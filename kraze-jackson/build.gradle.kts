@@ -14,14 +14,14 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":kraze"))
+    implementation("com.developersyndicate.kraze:kraze:1.0.0-alpha")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.2")
     testImplementation(kotlin("test"))
 }
 
 mavenPublishing {
-    coordinates("com.github.developersyndicate", "kraze-jackson", "1.0.0-alpha")
+    coordinates("com.developersyndicate.kraze", "kraze-jackson", "1.0.0-alpha")
 
     pom {
         name.set("Kraze Jackson")

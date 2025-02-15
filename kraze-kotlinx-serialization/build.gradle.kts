@@ -15,13 +15,13 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":kraze"))
+    implementation("com.developersyndicate.kraze:kraze:1.0.0-alpha")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
     testImplementation(kotlin("test"))
 }
 
 mavenPublishing {
-    coordinates("com.github.developersyndicate", "kraze-jackson", "1.0.0-alpha")
+    coordinates("com.developersyndicate.kraze", "kraze-kotlinx-serialization", "1.0.0-alpha")
 
     pom {
         name.set("Kraze Kotlinx Serialization")

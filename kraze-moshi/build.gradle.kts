@@ -14,13 +14,13 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":kraze"))
+    implementation("com.developersyndicate.kraze:kraze:1.0.0-alpha")
     implementation("com.squareup.moshi:moshi-kotlin:1.15.2")
     testImplementation(kotlin("test"))
 }
 
 mavenPublishing {
-    coordinates("com.github.developersyndicate", "kraze-moshi", "1.0.0-alpha")
+    coordinates("com.developersyndicate.kraze", "kraze-moshi", "1.0.0-alpha")
 
     pom {
         name.set("Kraze Moshi")

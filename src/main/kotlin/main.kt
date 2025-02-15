@@ -1,9 +1,9 @@
-import com.kraze.krazeClient
-import com.kraze.logging.KrazeLoggingInterceptor
-import com.kraze.serialization.GsonSerialization
-import com.kraze.serialization.JacksonSerialization
-import com.kraze.serialization.KotlinxSerialization
-import com.kraze.serialization.MoshiSerialization
+import com.developersyndicate.kraze.krazeClient
+import com.developersyndicate.kraze.logging.KrazeLoggingInterceptor
+import com.developersyndicate.kraze.serialization.GsonSerialization
+import com.developersyndicate.kraze.serialization.JacksonSerialization
+import com.developersyndicate.kraze.serialization.KotlinxSerialization
+import com.developersyndicate.kraze.serialization.MoshiSerialization
 import kotlinx.serialization.Serializable
 
 fun main() {
@@ -39,11 +39,11 @@ fun main() {
 //
 //    webSocket.send("")
 
-//    client.get<Model>("fact").onSuccess {
-//        println(it)
-//    }.onFailure {
-//        println(it)
-//    }
+    client.get<Model>("fact").onSuccess {
+        println(it)
+    }.onFailure {
+        println(it)
+    }
 //
 //    println("hello")
 

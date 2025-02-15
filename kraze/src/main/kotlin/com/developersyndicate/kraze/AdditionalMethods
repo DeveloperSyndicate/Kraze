@@ -1,0 +1,67 @@
+/*    // HTTP method-specific methods Next Update
+    fun get(path: String, block: RequestBuilder.() -> Unit = {}): Response {
+        return makeRequest(Methods.GET.name, path, block)
+    }
+
+    fun post(path: String, block: RequestBuilder.() -> Unit): Response {
+        return makeRequest(Methods.POST.name, path, block)
+    }
+
+    fun put(path: String, block: RequestBuilder.() -> Unit): Response {
+        return makeRequest(Methods.PUT.name, path, block)
+    }
+
+    fun delete(path: String, block: RequestBuilder.() -> Unit): Response {
+        return makeRequest(Methods.DELETE.name, path, block)
+    }
+
+    fun head(path: String, block: RequestBuilder.() -> Unit = {}): Response {
+        return makeRequest(Methods.HEAD.name, path, block)
+    }
+
+    fun options(path: String, block: RequestBuilder.() -> Unit = {}): Response {
+        return makeRequest(Methods.OPTIONS.name, path, block)
+    }
+
+    fun patch(path: String, block: RequestBuilder.() -> Unit): Response {
+        return makeRequest(Methods.PATCH.name, path, block)
+    }
+
+    fun trace(path: String, block: RequestBuilder.() -> Unit = {}): Response {
+        return makeRequest(Methods.TRACE.name, path, block)
+    }
+
+    fun connect(path: String, block: RequestBuilder.() -> Unit = {}): Response {
+        return makeRequest(Methods.CONNECT.name, path, block)
+    }*/
+
+
+        fun get(path: String, block: RequestBuilder.() -> Unit = {}): Result<Response> {
+            return runCatching {
+                makeRequest(Methods.GET.name, path, block)
+            }
+        }
+
+        fun post(path: String, block: RequestBuilder.() -> Unit = {}): Result<Response> {
+            return runCatching {
+                makeRequest(Methods.POST.name, path, block)
+            }
+        }
+
+        fun put(path: String, block: RequestBuilder.() -> Unit): Result<Response> {
+            return runCatching {
+                makeRequest(Methods.PUT.name, path, block)
+            }
+        }
+
+        fun delete(path: String, block: RequestBuilder.() -> Unit): Result<Response> {
+            return runCatching {
+                makeRequest(Methods.DELETE.name, path, block)
+            }
+        }
+
+        fun patch(path: String, block: RequestBuilder.() -> Unit): Result<Response> {
+            return runCatching {
+                makeRequest(Methods.PATCH.name, path, block)
+            }
+        }
